@@ -16,7 +16,7 @@ comment_router.register(
 
 urlpatterns = [
     path('v1/', include(router.urls)),
-    path('v1/posts/<post_id>/', include(comment_router.urls)),
+    path('v1/posts/<int:post_id>/', include(comment_router.urls)),
     path('v1/follow/', views.FollowViewSet.as_view()),
     path('v1/', include('djoser.urls')),
     path('v1/', include('djoser.urls.jwt')),

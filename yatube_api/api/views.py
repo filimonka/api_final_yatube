@@ -1,12 +1,11 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, generics, permissions
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from . import serializers
 from .permissions import IsAuthorOrReadOnly
-from posts.models import Comment, Group, Post, User, Follow
+from posts.models import Comment, Group, Post, User
 
 
 class PostViewSet(ModelViewSet):
@@ -67,15 +66,6 @@ class FollowViewSet(generics.ListCreateAPIView):
         return user.follower.all()
 
     def perform_create(self, serializer):
-        user = self.request.user
-        following = get_object_or_404(
-            User,
-            username=self.request.data['following']
-        )
-        if following == user:
-            raise ValidationError('Подписка на самого себя невозможна')
-        if Follow.objects.filter(user=user, following=following).exists():
-            raise ValidationError('Такая подписка уже существует')
         return serializer.save(
             user=self.request.user
         )
